@@ -9,16 +9,12 @@ require_once("./../src/Core/Kernel.php");
 
 
 use Core\Kernel;
-use Http\Foundation\Request;
 
 ini_set("display_errors", true);
 error_reporting(E_ALL^E_NOTICE);
     
  $app = Kernel::getKernel();
  
- $request = new Request();
- try {
-    $data =  $request->trucmuche;
- } catch(Exception $e) {
-        echo $e->getMessage();
+ foreach($app->getRequest() as $key => $value) {
+     echo $key . " => " . $value . "<br>";
  }
