@@ -1,6 +1,8 @@
 <?php
 namespace  Core\Http\Foundation;
 
+use Core\Annotations\Route;
+
 /**
  *
  * @author jean-luc
@@ -20,7 +22,11 @@ class Request implements \Iterator{
      */
     private $index;
     
-    public $coucou = "Toto";
+    /**
+     * 
+     * @var Route Instance des routes définies dans l'application
+     */
+    private $route;
     
     /**
      * {@inheritDoc}
@@ -75,8 +81,9 @@ class Request implements \Iterator{
     /**
      * 
      */
-    public function __construct(){
+    public function __construct(Route $route){
         $this->queryParams = $this->_getQueryParams();
+        $this->route = $route;
     }
     
     public function __get($attributeName) {
@@ -84,6 +91,8 @@ class Request implements \Iterator{
             if (array_key_exists($attributeName, $this->queryParams)) {
                 return $this->queryParams[$attributeName];
             }
+        } else {
+            return $this->{$attributeName};
         }
         throw new \Exception("L'attribut " . $attributeName . " n'existe pas dans la classe " . self::class);
     }
@@ -92,6 +101,17 @@ class Request implements \Iterator{
         
     }
     
+    public function hasMatch(): array {
+        try {
+            $responseHandler = $this->route->hasMatch(
+                $this->request_method,
+                $this->request_uri
+            );
+            return $responseHandler;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
     /**
      * Returns poor array with query parameters
      * @return array

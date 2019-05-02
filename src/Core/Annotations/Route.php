@@ -50,6 +50,20 @@ class Route extends Annotation implements IAnnotationReader
         }
     }
     
+    public function hasMatch(string $verb, string $uri) {
+        foreach($this->routes as $controller => $route) {
+            foreach ($route as $method => $action) {
+                if ($action["verb"] == ucfirst(strtolower($verb)) && $action["route"] == $uri) {
+                    return [
+                        "controller" => $controller,
+                        "method" => $method
+                    ];
+                }
+            }
+        }
+        throw new \Exception("Fallback [No route found for " . $verb . "::" . $uri . "]");
+    }
+    
     public function read(string $annotation): array {
         if (strstr($annotation, "@Route") !== false ) {
             $stringParser = explode("\\", $annotation);

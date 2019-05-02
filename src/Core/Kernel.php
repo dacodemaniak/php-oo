@@ -31,20 +31,36 @@ final class Kernel
      * 
      * @var Core\Annotations\Route
      */
-    private $routes;
+    private $route;
     
     const _SRC_ROOT_DIR = "src/";
+    
+    private $response;
+    
     
     /**
      */
     private function __construct(){
         spl_autoload_register("self::autoload");
         
-        // Récupère les données de la requête HTTP
-        $this->request = new HttpRequest();
-        
         // Récupère les routes définies dans les contrôleurs
-        $this->routes = new Route();
+        $this->route = new Route();
+        
+        // Récupère les données de la requête HTTP
+        try {
+            $this->request = new HttpRequest($this->route);
+        
+            // Tente de déterminer le gestionnaire de réponse
+            try {
+                $responseHandler = $this->request->hasMatch();
+                var_dump($responseHandler);
+            } catch(\Exception $e) {
+                // Default to 404...
+                echo "Default to 404 : " . $e->getMessage();
+            }
+        } catch(\Exception $e) {
+                die($e->getMessage());
+        }
     }
     
     public static function getKernel() {
@@ -61,6 +77,11 @@ final class Kernel
      */
     public function getRequest(): HttpRequest {
         return $this->request;
+    }
+    
+    
+    public function sendResponse() {
+        
     }
     
     private static function autoload(string $className) {

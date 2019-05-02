@@ -16,6 +16,10 @@ abstract class Annotation
     
     abstract protected function readAnnotation();
     
+    public function getRoutes(): array {
+        return $this->routes;
+    }
+    
     protected function fetchFiles(string $path) {
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(__DIR__ . "/../../" . $path));
         

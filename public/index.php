@@ -14,7 +14,3 @@ ini_set("display_errors", true);
 error_reporting(E_ALL^E_NOTICE);
     
  $app = Kernel::getKernel();
- 
- foreach($app->getRequest() as $key => $value) {
-     echo $key . " => " . $value . "<br>";
- }
